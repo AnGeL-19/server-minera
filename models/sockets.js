@@ -1,4 +1,5 @@
 const e = require('express');
+const Carga = require('./carga');
 const Marcadores = require('./marcadores');
 const Sonas = require('./sonas');
 
@@ -30,14 +31,22 @@ class Sockets {
 
                 const carro = this.marcadores.marcadoresActivos().find(elemento => elemento.id == idCarro); 
                 console.log(carro, "si es merengue");
-                console.log(infoCarga);
+                console.log(new Carga(carro.id,carro.conductor,infoCarga));
+
 
             });
+
+            socket.on("info-sona", (objSona) => {
+
+                console.log(objSona);
+
+            });
+
 
             socket.on( 'marcador-nuevo', ( marcador ) => {  
                 this.marcadores.agregarMarcador( marcador );
                 console.log(marcador);
-                socket.broadcast.emit( 'marcador-nuevo', marcador )
+                socket.broadcast.emit( 'marcador-nuevo', marcador );
                 
             });
 
