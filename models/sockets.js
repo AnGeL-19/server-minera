@@ -1,3 +1,4 @@
+const e = require('express');
 const Marcadores = require('./marcadores');
 const Sonas = require('./sonas');
 
@@ -20,21 +21,32 @@ class Sockets {
 
             console.log("Cliente conectado");
 
-            socket.emit( 'marcadores-activos' , this.marcadores.activos );
+            socket.emit( 'marcadores-activos' , this.marcadores.marcadoresActivos() );
 
             socket.emit( 'sonas-activas' , this.sonas.activos ); // enviamos las sonas guardadas
             // pero truena en addLayer no se por que xd
 
-            socket.on( 'marcador-nuevo', ( marcador ) => {  // { id, lng, lat }
+            socket.on("agregar-entrega", (idCarro, infoCarga) => {
+
+                const carro = this.marcadores.marcadoresActivos().find(elemento => elemento.id == idCarro); 
+                console.log(carro, "si es merengue");
+                console.log(infoCarga);
+
+            });
+
+            socket.on( 'marcador-nuevo', ( marcador ) => {  
                 this.marcadores.agregarMarcador( marcador );
-                
+                console.log(marcador);
                 socket.broadcast.emit( 'marcador-nuevo', marcador )
+                
             });
 
 
             socket.on( 'marcador-actualizado', (marcador) => {
+                
                 this.marcadores.actualizarMarcador( marcador );
-                socket.broadcast.emit( 'marcador-actualizado', marcador );
+                socket.broadcast.emit( 'marcador-actualizado', marcador );   
+
             });
             
         
