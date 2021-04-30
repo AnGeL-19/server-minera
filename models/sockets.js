@@ -2,9 +2,10 @@ const e = require('express');
 const Carga = require('./carga');
 const Marcadores = require('./marcadores');
 const Sonas = require('./sonas');
+const axios = require('axios');
 
 class Sockets {
-
+    
     constructor( io ) {
 
         this.io = io;
@@ -16,12 +17,16 @@ class Sockets {
         this.socketEvents();
     }
 
+  
+        
+
     socketEvents() {
         // On connection
         this.io.on('connection', ( socket ) => {
 
             console.log("Cliente conectado");
 
+            
             socket.emit( 'marcadores-activos' , this.marcadores.marcadoresActivos() );
 
             socket.emit( 'sonas-activas' , this.sonas.activos ); // enviamos las sonas guardadas
@@ -39,6 +44,31 @@ class Sockets {
             socket.on("info-sona", (objSona) => {
 
                 console.log(objSona);
+                //peticionPostCongestions(objSona);
+                // -------
+
+              //  fetch('https://7a226e8f6920.ngrok.io/api/congestions/', {
+              //      method: 'POST',
+              //      body: objSona
+              //      
+              //   });
+
+              //axios.get('https://984b11671680.ngrok.io/api/congestions/')
+              //.then(response => {
+              //console.log(response.data)
+              //})
+              //.catch(error => {
+              //console.log(error)
+              //});
+
+                axios.post('https://984b11671680.ngrok.io/api/congestions/',objSona)
+                    .then(response => {
+                    console.log(response.data)
+                    })
+                    .catch(error => {
+                    console.log(error)
+                });
+  
 
             });
 
